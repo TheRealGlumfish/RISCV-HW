@@ -1,0 +1,16 @@
+---
+# Note: The contents of this file are automatically generated.
+# Any changes made by hand may be overwritten.
+version: '0.2'
+work_dir: sim
+design_root_dir: .
+simulations:
+  - name: regfile
+    options: '-top work.regfile_tb +acc -waves regfile.vcd'
+source_files:
+  - language: verilog
+    path: ../rtl/regfile.sv
+  - language: verilog
+    path: ../tb/regfile_tb.sv
+library_search_paths:
+  - $STD_LIBS/ieee93
