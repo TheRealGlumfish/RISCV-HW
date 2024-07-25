@@ -7,10 +7,16 @@ design_root_dir: .
 simulations:
   - name: regfile
     options: '-top work.regfile_tb +acc -waves regfile.vcd'
+  - name: alu
+    options: '-top work.alu_tb'
 source_files:
   - language: verilog
     path: ../rtl/regfile.sv
   - language: verilog
     path: ../tb/regfile_tb.sv
+  - language: verilog
+    path: ../rtl/alu.sv
+  - language: verilog
+    path: ../tb/alu_tb.sv
 library_search_paths:
   - $STD_LIBS/ieee93
