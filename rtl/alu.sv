@@ -35,6 +35,7 @@ always_comb
         4'b0111: // and / andi
             res = A & B;
         // 4'b0000: // uninitialized
+            // res = 0
     endcase
 
 endmodule

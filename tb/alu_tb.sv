@@ -22,6 +22,35 @@ initial begin
     B = -2;
     ctrl = 4'b1000; // sub
     #10 assert(res == 6);
+    A = 3;
+    B = 1;
+    ctrl = 4'b0010; // slt
+    #10 assert(res == 0);
+    A = 1;
+    B = 3;
+    ctrl = 4'b0010; // slt
+    #10 assert(res == 1);
+    A = 1;
+    B = -3;
+    ctrl = 4'b0010; // slt
+    #10 assert(res == 0);
+    A = -3;
+    B = -5;
+    ctrl = 4'b0010; // slt
+    #10 assert(res == 0);
+    A = -5;
+    B = -3;
+    ctrl = 4'b0010; // slt
+    #10 assert(res == 1);
+    A = {2'b11, {30{1'b0}}};
+    B = {2'b00, {30{1'b0}}};
+    ctrl = 4'b0011; // sltu
+    #10 assert(res == 0);
+    A = {2'b00, {30{1'b0}}};
+    B = {2'b11, {30{1'b0}}};
+    ctrl = 4'b0011; // sltu
+    #10 assert(res == 1);
+    // TODO: Add additional tests for left/right shifts
 end
 
 alu dut(

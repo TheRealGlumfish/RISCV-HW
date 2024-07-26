@@ -8,7 +8,7 @@ simulations:
   - name: regfile
     options: '-top work.regfile_tb +acc -waves regfile.vcd'
   - name: alu
-    options: '-top work.alu_tb'
+    options: '-top work.alu_tb +acc -waves alu.vcd'
 source_files:
   - language: verilog
     path: ../rtl/regfile.sv
