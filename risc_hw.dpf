@@ -18,5 +18,13 @@ source_files:
     path: ../rtl/alu.sv
   - language: verilog
     path: ../tb/alu_tb.sv
+  - language: verilog
+    path: ../rtl/ctrl.sv
+  - language: verilog
+    path: ../rtl/mem.sv
+  - language: verilog
+    path: ../tb/mem_tb.sv
+  - language: verilog
+    path: ../rtl/top.sv
 library_search_paths:
   - $STD_LIBS/ieee93

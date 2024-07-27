@@ -1,3 +1,4 @@
+// RV32I Register File
 `timescale 1ps/1ps
 module regfile(
     input               clk,
@@ -14,11 +15,11 @@ logic [31:0] registers[31:0];
 
 // TODO: Examine write/read order and check synthesis results
 always_comb begin
-    if(regA_sel == 4'b0)
+    if(regA_sel == 5'b0)
         regA_o = 0;
     else
         regA_o = registers[regA_sel];
-    if(regB_sel == 4'b0)
+    if(regB_sel == 5'b0)
         regB_o = 0;
     else
         regB_o = registers[regB_sel];

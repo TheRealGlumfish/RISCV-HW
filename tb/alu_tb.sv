@@ -1,9 +1,10 @@
 `timescale 1ps/1ps
 module alu_tb;
-int       A;
-int       B;
-bit [3:0] ctrl;
-integer   res;
+int          A;
+int          B;
+bit   [3:0]  ctrl;
+logic [31:0] res;
+logic        zero;
 
 initial begin
     A = 31;

@@ -1,9 +1,11 @@
+// RV32I Arithmetic Logic Unit (ALU)
 `timescale 1ps/1ps
 module alu(
     input        [31:0] A,
     input        [31:0] B,
     input        [3:0]  ctrl,
-    output logic [31:0] res // TODO: Register the output depending on synthesis results
+    output logic [31:0] res, // TODO: Register the output depending on synthesis results
+    output              zero // TOOD: Verify whether this is the most efficient/perfomant way to do this
 );
 // TODO: Potentially pack funct3 and funct7 into a unified control signal
 // TOOD: Add support for multiply/divide instructions
@@ -26,6 +28,8 @@ always_comb
             res = A_signed < B_signed;
         4'b0011: // sltu / sltiu
             res = A < B;
+        4'b0100: // xor / xori
+            res = A^B;
         4'b0101: // srl / srli
             res = A >> B[4:0];
         4'b1101: // sra / srai
@@ -37,5 +41,7 @@ always_comb
         // 4'b0000: // uninitialized
             // res = 0
     endcase
+
+assign zero = res == 0;
 
 endmodule
