@@ -11,6 +11,7 @@ module regfile(
     output logic [31:0] regB_o
 );
 
+// TODO: Add zero initialization to prevent x propagation
 logic [31:0] registers[31:0];
 
 // TODO: Examine write/read order and check synthesis results
@@ -25,7 +26,7 @@ always_comb begin
         regB_o = registers[regB_sel];
 end
 
-always_ff @(posedge clk) begin
+always_ff@(posedge clk) begin
     if(wen) // TODO: Potentially make zero register unwritable, check synthesis results
         registers[regW_sel] <= regW_i;
 end

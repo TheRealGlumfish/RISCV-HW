@@ -10,11 +10,11 @@ bit   [31:0] regW_i;
 logic [31:0] regA_o;
 logic [31:0] regB_o;
 
-int i;
 int reg_exp [31:0];
 
 // TOOD: Switch to more complicated timed testing using SV assertions to ensure speciifc timing constraints
 initial begin
+    int i;
     clk = 1'b0;
     wen = 1'b0;
     regA_sel = 5'b0;

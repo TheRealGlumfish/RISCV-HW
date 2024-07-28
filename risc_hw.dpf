@@ -6,9 +6,11 @@ work_dir: sim
 design_root_dir: .
 simulations:
   - name: regfile
-    options: '-top work.regfile_tb +acc -waves regfile.vcd'
+    options: '-top work.regfile_tb +acc -dump-agg -waves regfile.vcd'
   - name: alu
     options: '-top work.alu_tb +acc -waves alu.vcd'
+  - name: top
+    options: '-top work.top_tb +acc -dump-agg -waves top.vcd'
 source_files:
   - language: verilog
     path: ../rtl/regfile.sv
@@ -26,5 +28,7 @@ source_files:
     path: ../tb/mem_tb.sv
   - language: verilog
     path: ../rtl/top.sv
+  - language: verilog
+    path: ../tb/top_tb.sv
 library_search_paths:
   - $STD_LIBS/ieee93

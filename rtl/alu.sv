@@ -42,6 +42,7 @@ always_comb
             // res = 0
     endcase
 
+// TODO: See if this logic can be improved, by additional hardware or different ways of checking
 assign zero = res == 0;
 
 endmodule
