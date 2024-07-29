@@ -2,11 +2,13 @@
 `timescale 1ps/1ps
 module mem(
     input               clk,
-    input        [31:0] addr,
-    output logic [31:0] data_o,
-    input        [2:0]  sel, // funct3
-    input               wen,
-    input        [31:0] data_i
+    input        [31:0] addrA, // read port
+    input        [31:0] addrB, // read/write port
+    output logic [31:0] dataA_o,
+    output logic [31:0] dataB_o,
+    input        [2:0]  selA, // funct3
+    input               wenA,
+    input        [31:0] dataA_i
 );
 
 logic [7:0] mem [128:0];
@@ -28,22 +30,24 @@ initial begin
     //     $display("%h", mem_init[i]);
 end
 
-always_ff
-    unique case(sel) // TODO: Ensure this infers combinational logic
-        3'b000: data_o = {{24{mem[addr][7]}}, mem[addr]}; // lb
-        3'b001: data_o = {{16{mem[addr+1][7]}}, mem[addr+1], mem[addr]}; // lh
-        3'd010: data_o = {mem[addr+3], mem[addr+2], mem[addr+1], mem[addr]}; // lw
-        3'b100: data_o = {8'b0, 8'b0, 8'b0, mem[addr]}; // lbu
-        3'b101: data_o = {8'b0, 8'b0, mem[addr+1], mem[addr]}; // lhu
+always_comb
+    unique case(selA) // TODO: Ensure this infers combinational logic
+        3'b000: dataA_o = {{24{mem[addrA][7]}}, mem[addrA]}; // lb
+        3'b001: dataA_o = {{16{mem[addrA+1][7]}}, mem[addrA+1], mem[addrA]}; // lh
+        3'd010: dataA_o = {mem[addrA+3], mem[addrA+2], mem[addrA+1], mem[addrA]}; // lw
+        3'b100: dataA_o = {8'b0, 8'b0, 8'b0, mem[addrA]}; // lbu
+        3'b101: dataA_o = {8'b0, 8'b0, mem[addrA+1], mem[addrA]}; // lhu
     endcase
 // TODO: Test sign extension works
 
+assign dataB_o = {mem[addrB+3], mem[addrB+2], mem[addrB+1], mem[addrB]};
+
 always_ff@(posedge clk) begin
-    if(wen)
-        unique case(sel)
-            3'b000: mem[addr] <= data_i[7:0];
-            3'b001: {mem[addr+1], mem[addr]} <= data_i[15:0];
-            3'b010: {mem[addr+3], mem[addr+2], mem[addr+1], mem[addr]} <= data_i;
+    if(wenA)
+        unique case(selA)
+            3'b000: mem[addrA] <= dataA_i[7:0];
+            3'b001: {mem[addrA+1], mem[addrA]} <= dataA_i[15:0];
+            3'b010: {mem[addrA+3], mem[addrA+2], mem[addrA+1], mem[addrA]} <= dataA_i;
         endcase
 end
 

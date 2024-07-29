@@ -38,8 +38,8 @@ always_comb
             res = A | B;
         4'b0111: // and / andi
             res = A & B;
-        // 4'b0000: // uninitialized
-            // res = 0
+        4'b1111: // lui TODO: Potentially change
+            res = B;
     endcase
 
 // TODO: See if this logic can be improved, by additional hardware or different ways of checking
