@@ -1,15 +1,24 @@
 `timescale 1ps/1ps
 module top(
     input clk,
-    input rst
+    input rst_n,
+    input in1,
+    input in2,
+    output out1,
+    output out2
 );
 
+logic [31:0] bus_addr;
+logic [31:0] bus_data_in; // Data to CPU
+logic [31:0] bus_data_out; // Data to bus
+logic        bus_en;
 logic        mem_wen;
 logic [2:0]  mem_mode;
 logic [31:0] inst_addr;
 logic [31:0] inst_data;
 logic [31:0] mem_data;
 logic        mem_sel;
+logic [31:0] pio_data_out; // Data to bus
 
 logic        reg_wen;
 logic [4:0]  regA_sel;
@@ -29,9 +38,13 @@ logic [31:0] imm;
 logic        imm_sel;
 logic        pc_sel;
 
+logic [31:0] pio_in;
+logic [31:0] pio_out;
+
 ctrl main_ctrl(
     .clk,
-    .rst,
+    .rst(!rst_n),
+    .mem_en(bus_en),
     .mem_wen,
     .mem_mode,
     .mem_addr(inst_addr),
@@ -60,7 +73,7 @@ regfile main_regfile(
     .regB_o
 );
 
-assign regW_i = mem_sel ? mem_data : alu_res;
+assign regW_i = mem_sel ? bus_data_in : alu_res;
 assign alu_B = imm_sel ? imm : regB_o;
 assign alu_A = pc_sel ? inst_addr : regA_o;
 
@@ -72,15 +85,42 @@ alu main_alu(
     .zero(alu_zero)
 );
 
+localparam ADDR_PERIPH = 32'h00000100;
+localparam ADDR_IN = 32'h00000100;
+localparam ADDR_OUT = 32'h00000104;
+
+assign bus_addr = alu_res;
+assign bus_data_out = regB_o;
+
+always_comb begin
+    if(bus_addr < ADDR_PERIPH)
+        bus_data_in = mem_data;    
+    else
+        bus_data_in = pio_data_out;
+end
+
 mem main_mem(
     .clk,
-    .addrA(alu_res),
+    .addrA(bus_addr),
     .addrB(inst_addr),
     .dataA_o(mem_data),
     .dataB_o(inst_data),
     .selA(mem_mode),
     .wenA(mem_wen),
-    .dataA_i(regB_o)
+    .dataA_i(bus_data_out)
 );
+
+pio #(.ADDR_IN(ADDR_IN), .ADDR_OUT(ADDR_OUT))pio1(
+    .clk,
+    .en(bus_en),
+    .addr(bus_addr),
+    .data_i(bus_data_out),
+    .data_o(pio_data_out),
+    .in(pio_in),
+    .out(pio_out)
+);
+
+assign pio_in = {30'b0, in2, in1};
+assign {out2, out1} = pio_out;
 
 endmodule

@@ -2,11 +2,15 @@
 module top_tb;
    bit clk;
    bit rst; 
+   logic in1;
+   logic in2;
+   logic out1;
+   logic out2;
 
 initial begin
     clk = 1'b0;
     rst = 1'b0; // TODO: Enable reset
-    #200
+    #1000
     $finish;
 end
 
@@ -15,7 +19,11 @@ always
 
 top dut(
     .clk,
-    .rst
+    .rst_n(!rst),
+    .in1,
+    .in2,
+    .out1,
+    .out2
 );
 
 endmodule

@@ -30,5 +30,7 @@ source_files:
     path: ../rtl/top.sv
   - language: verilog
     path: ../tb/top_tb.sv
+  - language: verilog
+    path: ../rtl/pio.sv
 library_search_paths:
   - $STD_LIBS/ieee93

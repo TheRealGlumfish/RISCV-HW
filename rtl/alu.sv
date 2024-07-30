@@ -16,7 +16,7 @@ assign A_signed = A;
 assign B_signed = B;
 
 always_comb
-    unique case(ctrl)
+    unique case(ctrl) /* synthesis parallel_case full_case */
         // R-type / I-type
         4'b0000: // add / addi
             res = A_signed + B_signed;
