@@ -11,6 +11,8 @@ simulations:
     options: '-top work.alu_tb +acc -waves alu.vcd'
   - name: top
     options: '-top work.top_tb +acc -dump-agg -waves top.vcd'
+  - name: mem
+    options: '-top work.mem_tb +acc -waves mem.vcd'
 source_files:
   - language: verilog
     path: ../rtl/regfile.sv
@@ -23,8 +25,6 @@ source_files:
   - language: verilog
     path: ../rtl/ctrl.sv
   - language: verilog
-    path: ../rtl/mem.sv
-  - language: verilog
     path: ../tb/mem_tb.sv
   - language: verilog
     path: ../rtl/top.sv
@@ -32,5 +32,9 @@ source_files:
     path: ../tb/top_tb.sv
   - language: verilog
     path: ../rtl/pio.sv
+  - language: verilog
+    path: ../rtl/mock_mem.sv
+  - language: verilog
+    path: ../rtl/gowin_mem.sv
 library_search_paths:
   - $STD_LIBS/ieee93

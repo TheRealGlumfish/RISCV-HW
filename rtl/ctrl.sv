@@ -18,6 +18,7 @@ module ctrl(
     input        [31:0] regA,
     output logic [31:0] imm,
     output logic        imm_sel,
+    output logic [31:0] pc_old = 0, // PC of currently executed instruction
     output logic        pc_sel
 );
 
@@ -36,7 +37,7 @@ typedef enum logic [6:0] {
 opcode_t     opcode;
 logic [6:0]  funct7;
 logic [2:0]  funct3;
-logic [31:0] pc;
+logic [31:0] pc = 0;
 
 logic [31:0] inst;
 assign inst = mem_data;
@@ -100,14 +101,7 @@ always_comb // Sign extension logic
 // } cpu_state_t;
 
 // cpu_state_t state;
-logic        stall_n;
-logic [31:0] pc_old;
-
-initial begin
-    pc = 0;
-    pc_old = 0;
-    stall_n = 1'b0; // stall on first cycle
-end
+logic stall_n = 1'b0; // stall on first cycle
 
 always_ff@(posedge clk)
     if(rst) begin
@@ -173,10 +167,14 @@ always_ff@(posedge clk)
                     pc <= pc + 4;
                 LUI:
                     pc <= pc + 4;
-                JAL: // TODO: Potentially do this in the ALU
-                    pc <= pc + {{12{inst[31]}}, inst[19:12], inst[20], inst[30:25], inst[24:21], 1'b0};
-                JALR: // TODO: Potentially do this in the ALU
+                JAL: begin // TODO: Potentially do this in the ALU
+                    pc <= pc_old + {{12{inst[31]}}, inst[19:12], inst[20], inst[30:25], inst[24:21], 1'b0};
+                    stall_n = 1'b0;
+                end
+                JALR: begin // TODO: Potentially do this in the ALU
                     pc <= regA + {{21{inst[31]}}, inst[30:25], inst[24:21], inst[20]};
+                    stall_n = 1'b0;
+                end
             endcase
         end
         else

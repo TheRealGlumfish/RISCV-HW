@@ -2,38 +2,58 @@
 module mem_tb;
 
 bit          clk;
-int          addr;
-logic [31:0] data_o;
-bit   [1:0]  sel; 
-bit          wen;
-int          data_i;
+int          addrA;
+int          addrB;
+int          dataA_i;
+logic [31:0] dataA_o_mock;
+logic [31:0] dataA_o_gowin;
+logic [31:0] dataB_o_mock;
+logic [31:0] dataB_o_gowin;
+bit   [2:0]  selA; 
+bit          wenA;
+
+localparam SIZE = 32;
 
 // TOOD: Finish the testbench
 initial begin
+    int i;
     clk = 1'b0;
-    addr = 0;
-    sel = 2'd2;
-    wen = 1'b0;
-    data_i = 0;
-    #10;
-    wen = 1'b1;
-    #10;
-    data_i = 32'b11110101;
-    addr = 4;
+    wenA = 1'b0;
     #10
-    addr = 8;
+    $display("Mock memory initialized to:");
+    for(i = 0; i < SIZE*4; i = i + 4)
+        $display("%h", {dut1.mem[i+3], dut1.mem[i+2], dut1.mem[i+1], dut1.mem[i]});
+    $display("Gowin memory initialized to:");
+    for(i = 0; i < SIZE; i = i + 1)
+        $display("%h", dut2.mem[i]);
+    for(i = 0; i < SIZE*4; i = i + 4)
+        assert({dut1.mem[i+3], dut1.mem[i+2], dut1.mem[i+1], dut1.mem[i]} === dut2.mem[i/4]); // === is used to compare x's
+    $finish;
 end
 
 always
     #5 clk = !clk;
 
-mem dut(
+mock_mem #(.SIZE(SIZE)) dut1(
     .clk,
-    .addr,
-    .data_o,
-    .sel,
-    .wen,
-    .data_i
+    .addrA,
+    .addrB,
+    .dataA_o(dataA_o_mock),
+    .dataB_o(dataB_o_mock),
+    .selA,
+    .wenA,
+    .dataA_i
+);
+
+gowin_mem #(.SIZE(SIZE)) dut2(
+    .clk,
+    .addrA,
+    .addrB,
+    .dataA_o(dataA_o_gowin),
+    .dataB_o(dataB_o_gowin),
+    .selA,
+    .wenA,
+    .dataA_i
 );
 
 endmodule

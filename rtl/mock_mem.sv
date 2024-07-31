@@ -1,6 +1,8 @@
 // RV32I Mock Memory
 `timescale 1ps/1ps
-module mem(
+module mock_mem#(
+    parameter SIZE = 128
+)(
     input               clk,
     input        [31:0] addrA, // read port
     input        [31:0] addrB, // read/write port
@@ -11,27 +13,15 @@ module mem(
     input        [31:0] dataA_i
 );
 
-logic [7:0] mem [63:0];
-logic [31:0] mem_init[15:0];
+logic [7:0] mem [(SIZE*4)-1:0];
 logic [31:0] data_o_reg;
 
-initial begin
-    int i;
-    // $readmemh("../tb/test.mem_32", mem_init);
+initial begin // TODO: Potentially initialize while declaring to prevent sim from complaining
     $readmemh("../tb/test.mem", mem);
-    $display("Memory initialized to:");
-    // Convert word addressed memory to byte addressed
-    // for(i = 0; i < 32; i = i + 1) begin
-        // {mem[i+3], mem[i+2], mem[i+1], mem[i]} = mem_init[i];
-    for(i = 0; i < 64; i = i + 4)
-        $display("%h", {mem[i+3], mem[i+2], mem[i+1], mem[i]});
-    // $display("This is how word memory would look like:");
-    // for(i = 0; i < 32; i = i + 1)
-    //     $display("%h", mem_init[i]);
 end
 
 always_ff@(posedge clk)
-    unique case(selA) /* synthesis full_case parallel_case */
+    unique case(selA)
         3'b000: dataA_o <= {{24{mem[addrA][7]}}, mem[addrA]}; // lb
         3'b001: dataA_o <= {{16{mem[addrA+1][7]}}, mem[addrA+1], mem[addrA]}; // lh
         3'b010: dataA_o <= {mem[addrA+3], mem[addrA+2], mem[addrA+1], mem[addrA]}; // lw
@@ -45,7 +35,7 @@ always_ff@(posedge clk)
 
 always_ff@(posedge clk) begin
     if(wenA)
-        unique case(selA) /* synthesis full_case parallel_case */
+        unique case(selA)
             3'b000: mem[addrA] <= dataA_i[7:0];
             3'b001: {mem[addrA+1], mem[addrA]} <= dataA_i[15:0];
             3'b010: {mem[addrA+3], mem[addrA+2], mem[addrA+1], mem[addrA]} <= dataA_i;

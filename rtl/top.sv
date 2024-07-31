@@ -36,6 +36,7 @@ logic        alu_zero;
 
 logic [31:0] imm;
 logic        imm_sel;
+logic [31:0] pc;
 logic        pc_sel;
 
 logic [31:0] pio_in;
@@ -59,6 +60,7 @@ ctrl main_ctrl(
     .regA(regA_o),
     .imm,
     .imm_sel,
+    .pc_old(pc),
     .pc_sel
 );
 
@@ -75,7 +77,7 @@ regfile main_regfile(
 
 assign regW_i = mem_sel ? bus_data_in : alu_res;
 assign alu_B = imm_sel ? imm : regB_o;
-assign alu_A = pc_sel ? inst_addr : regA_o;
+assign alu_A = pc_sel ? pc : regA_o;
 
 alu main_alu(
     .A(alu_A),
@@ -99,16 +101,27 @@ always_comb begin
         bus_data_in = pio_data_out;
 end
 
-mem main_mem(
-    .clk,
-    .addrA(bus_addr),
-    .addrB(inst_addr),
-    .dataA_o(mem_data),
-    .dataB_o(inst_data),
-    .selA(mem_mode),
-    .wenA(mem_wen),
-    .dataA_i(bus_data_out)
+mock_mem sim_mem(
+   .clk,
+   .addrA(bus_addr),
+   .addrB(inst_addr),
+   .dataA_o(mem_data),
+   .dataB_o(inst_data),
+   .selA(mem_mode),
+   .wenA(mem_wen),
+   .dataA_i(bus_data_out)
 );
+
+//  gowin_mem syn_mem(
+//      .clk,
+//      .addrA(bus_addr),
+//      .addrB(inst_addr),
+//      .dataA_o(mem_data),
+//      .dataB_o(inst_data),
+//      .selA(mem_mode),
+//      .wenA(mem_wen),
+//      .dataA_i(bus_data_out)
+// );
 
 pio #(.ADDR_IN(ADDR_IN), .ADDR_OUT(ADDR_OUT))pio1(
     .clk,

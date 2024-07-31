@@ -1,7 +1,7 @@
 `timescale 1ps/1ps
 module top_tb;
    bit clk;
-   bit rst; 
+   bit rst_n; 
    logic in1;
    logic in2;
    logic out1;
@@ -9,7 +9,7 @@ module top_tb;
 
 initial begin
     clk = 1'b0;
-    rst = 1'b0; // TODO: Enable reset
+    rst_n = 1'b1; // TODO: Enable reset
     #1000
     $finish;
 end
@@ -19,7 +19,7 @@ always
 
 top dut(
     .clk,
-    .rst_n(!rst),
+    .rst_n,
     .in1,
     .in2,
     .out1,
