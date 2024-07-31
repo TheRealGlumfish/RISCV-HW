@@ -1,0 +1,12 @@
+IO_LOC "rst_n" T3; // TODO: Invert
+IO_LOC "clk" H11;
+IO_LOC "out1" L14; // LEDs
+IO_LOC "out2" N16;
+// TODO: Add pin constraints for the two inputs
+
+IO_PORT "clk" IO_TYPE=LVCMOS33;
+IO_PORT "rst_n" IO_TYPE=LVCMOS33;
+IO_PORT "out1" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=4;
+IO_PORT "out2" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=4;
+IO_PORT "in1" IO_TYPE=LVCMOS33;
+IO_PORT "in2" IO_TYPE=LVCMOS33;
