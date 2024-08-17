@@ -169,11 +169,11 @@ always_ff@(posedge clk)
                     pc <= pc + 4;
                 JAL: begin // TODO: Potentially do this in the ALU
                     pc <= pc_old + {{12{inst[31]}}, inst[19:12], inst[20], inst[30:25], inst[24:21], 1'b0};
-                    stall_n = 1'b0;
+                    stall_n <= 1'b0;
                 end
                 JALR: begin // TODO: Potentially do this in the ALU
                     pc <= regA + {{21{inst[31]}}, inst[30:25], inst[24:21], inst[20]};
-                    stall_n = 1'b0;
+                    stall_n <= 1'b0;
                 end
             endcase
         end
